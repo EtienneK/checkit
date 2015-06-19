@@ -21,6 +21,7 @@ import rx.Subscriber;
 
 import com.etiennek.check.integration.store.Extractor;
 import com.etiennek.check.integration.store.Item;
+import com.etiennek.check.integration.store.StockStatus;
 
 public class TakealotExtractor implements Extractor {
 
@@ -96,6 +97,17 @@ public class TakealotExtractor implements Extractor {
                               .attr("href")
                               .toString();
 
-    return new Item(name, price, url);
+    StockStatus stockStatus = StockStatus.OUT_OF_STOCK;
+    if (el.select("div.shipping-information span.in-stock")
+          .isEmpty() == false) {
+      stockStatus = StockStatus.IN_STOCK_STORE;
+    } else if (el.select("div.shipping-information span.wha strong")
+                 .isEmpty() == false) {
+      stockStatus = StockStatus.IN_STOCK_SUPPLIER;
+    }
+
+    String storeId = url.substring(url.lastIndexOf("/") + 1);
+
+    return new Item(storeId, name, price, stockStatus, url);
   }
 }
