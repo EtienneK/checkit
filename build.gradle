@@ -1,0 +1,48 @@
+buildscript {
+  repositories {
+    jcenter { url "http://jcenter.bintray.com/" }
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+    classpath("org.batcha.gradle.plugins:git-dependencies:0.2")
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'eclipse'
+apply plugin: 'git-dependencies'
+
+group = "com.etiennek.check"
+version = "0.0.1"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories { maven { url "http://repo1.maven.org/maven2" } }
+
+ext {
+  rxVersion = '1.0.12'
+  guavaVersion = '18.0'
+  thymeleafSpringSecurityVersion = '2.1.2.RELEASE'
+  awaitilityVersion = '1.6.3'
+  jsoupVersion = '1.8.2'
+}
+
+dependencies {
+  compile "org.springframework.boot:spring-boot-starter-web"
+  compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+  compile "org.springframework.boot:spring-boot-starter-security"
+  compile "org.springframework.boot:spring-boot-starter-data-jpa"
+  compile "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:$thymeleafSpringSecurityVersion"
+  compile "com.google.guava:guava:$guavaVersion"
+  compile "io.reactivex:rxjava:$rxVersion"
+
+  compile "org.hsqldb:hsqldb"
+
+  compile "com.jayway.awaitility:awaitility:$awaitilityVersion"
+  compile "org.jsoup:jsoup:$jsoupVersion"
+
+  testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
