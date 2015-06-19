@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,7 +36,11 @@ public class TakealotExtractor implements Extractor {
 
   private SuccessCallback<? super ResponseEntity<String>> handlePage(Subscriber<? super Item> subscriber, int page) {
     return (httpEntity) -> {
-      List<Item> items = extract(httpEntity);
+
+      List<Item> items = extract(httpEntity).stream()
+                                            .filter(item -> item != null)
+                                            .collect(Collectors.toList());
+
       if (items.size() == 0) {
         subscriber.onCompleted();
         return;
@@ -43,7 +48,7 @@ public class TakealotExtractor implements Extractor {
 
       int nextPage = page + 1;
       requestPage(nextPage).addCallback(handlePage(subscriber, nextPage), ex -> subscriber.onError(ex));
-      
+
       items.forEach(item -> {
         subscriber.onNext(item);
       });
@@ -66,23 +71,31 @@ public class TakealotExtractor implements Extractor {
                 .select("li.result-item")
                 .stream()
                 .map((el) -> {
-
-                  String name = el.select("p.p-title")
-                                  .get(0)
-                                  .text();
-
-                  BigDecimal price = new BigDecimal(el.select("p.price span.amount")
-                                                      .get(0)
-                                                      .text()
-                                                      .replaceAll(",", ""));
-
-                  String url = BASE_URL + el.select("p.p-title a")
-                                            .get(0)
-                                            .attr("href")
-                                            .toString();
-
-                  return new Item(name, price, url);
+                  try {
+                    return map(el);
+                  } catch (Exception e) {
+                    // TODO: Error logging
+                    return null;
+                  }
                 })
                 .collect(Collectors.toList());
+  }
+
+  private Item map(Element el) {
+    String name = el.select("p.p-title")
+                    .get(0)
+                    .text();
+
+    BigDecimal price = new BigDecimal(el.select("p.price span.amount")
+                                        .get(0)
+                                        .text()
+                                        .replaceAll(",", ""));
+
+    String url = BASE_URL + el.select("p.p-title a")
+                              .get(0)
+                              .attr("href")
+                              .toString();
+
+    return new Item(name, price, url);
   }
 }
