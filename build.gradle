@@ -2,9 +2,10 @@ buildscript {
   repositories {
     jcenter { url "http://jcenter.bintray.com/" }
     mavenCentral()
+    maven { url 'http://repo.spring.io/milestone' }
   }
   dependencies {
-    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.4.RELEASE")
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.0.M1")
     classpath("org.batcha.gradle.plugins:git-dependencies:0.2")
   }
 }
@@ -19,7 +20,8 @@ version = "0.0.1"
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-repositories { maven { url "http://repo1.maven.org/maven2" } }
+repositories { maven { url "http://repo1.maven.org/maven2"
+  } }
 
 ext {
   rxVersion = '1.0.12'
@@ -30,19 +32,19 @@ ext {
 }
 
 dependencies {
+  // Spring
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-thymeleaf"
-  compile "org.springframework.boot:spring-boot-starter-security"
-  compile "org.springframework.boot:spring-boot-starter-data-jpa"
-  compile "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:$thymeleafSpringSecurityVersion"
+  compile "org.springframework.boot:spring-boot-starter-data-elasticsearch"
+
+  // Other
   compile "com.google.guava:guava:$guavaVersion"
   compile "io.reactivex:rxjava:$rxVersion"
-
   compile "org.hsqldb:hsqldb"
-
-  compile "com.jayway.awaitility:awaitility:$awaitilityVersion"
   compile "org.jsoup:jsoup:$jsoupVersion"
 
-  testCompile("org.springframework.boot:spring-boot-starter-test")
+  // Test
+  testCompile "com.jayway.awaitility:awaitility:$awaitilityVersion"
+  testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
