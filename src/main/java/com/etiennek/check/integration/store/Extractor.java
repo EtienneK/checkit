@@ -15,6 +15,7 @@ import org.springframework.web.client.AsyncRestTemplate;
 import static com.etiennek.util.Utils.m;
 import rx.Observable;
 
+@FunctionalInterface
 public interface Extractor {
 
   Observable<Item> extract();
