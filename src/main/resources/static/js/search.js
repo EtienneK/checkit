@@ -39,7 +39,7 @@ $(function() {
 			query = viewModel.query();
 		query = query.toLowerCase().trim();
 
-		$.get('http://localhost:8080/api/v1/search', {
+		$.get('/api/v1/search', {
 			query : query,
 			page : viewModel.nextPage()
 		}).done(function(data) {
