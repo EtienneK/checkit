@@ -1,0 +1,1 @@
+web: java -Dserver.port=$PORT -jar build/libs/checkit-0.0.1.jar
