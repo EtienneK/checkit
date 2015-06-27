@@ -24,7 +24,7 @@ public class AllExtractorsTests {
 		baseTest(new TakealotExtractor(), 201, 30);
 	}
 
-	//@Test
+	@Test
 	public void TimelessExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new TimelessExtractor(), 100, 20);
 	}

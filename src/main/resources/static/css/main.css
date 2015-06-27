@@ -3,18 +3,16 @@ body {
 }
 
 .item-list {
+	font-size:90%;
   margin-top: 10px;
 }
 
 .item-name {
-  font-size: 130%;
   font-weight: bold;
 }
 
 .item-price {
   text-align: right;
-  font-size: 130%;
   font-weight: bold;
   white-space: nowrap;
-  font-size: 130%;
 }
