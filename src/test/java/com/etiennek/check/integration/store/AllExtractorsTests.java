@@ -19,17 +19,17 @@ public class AllExtractorsTests {
 
 	private Log log = LogFactory.getLog(getClass());
 
-	@Test
+	//@Test
 	public void TakealotExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new TakealotExtractor(), 201, 30);
 	}
 
-	@Test
+	//@Test
 	public void TimelessExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new TimelessExtractor(), 100, 20);
 	}
 
-	@Test
+	//@Test
 	public void BgCoZaExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new BgCoZaExtractor(), 160, 20);
 	}
