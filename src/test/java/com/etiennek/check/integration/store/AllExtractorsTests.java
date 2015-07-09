@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.etiennek.check.integration.store.bgcoza.BgCoZaExtractor;
+import com.etiennek.check.integration.store.gamersquest.GamersQuestExtractor;
 import com.etiennek.check.integration.store.takealot.TakealotExtractor;
 import com.etiennek.check.integration.store.timeless.TimelessExtractor;
 
@@ -32,6 +33,11 @@ public class AllExtractorsTests {
 	//@Test
 	public void BgCoZaExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new BgCoZaExtractor(), 160, 20);
+	}
+	
+	//@Test
+	public void GamersQuestExtractor_Should_be_able_to_extract_Items() {
+		baseTest(new GamersQuestExtractor(), 110, 60);
 	}
 
 	public void baseTest(Extractor toTest, int minItems, long waitForSeconds) {

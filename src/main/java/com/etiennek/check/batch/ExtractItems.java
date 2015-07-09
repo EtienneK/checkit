@@ -16,6 +16,7 @@ import com.etiennek.check.domain.repo.ItemRepository;
 import com.etiennek.check.integration.store.Extractor;
 import com.etiennek.check.integration.store.StockStatus;
 import com.etiennek.check.integration.store.bgcoza.BgCoZaExtractor;
+import com.etiennek.check.integration.store.gamersquest.GamersQuestExtractor;
 import com.etiennek.check.integration.store.takealot.TakealotExtractor;
 import com.etiennek.check.integration.store.timeless.TimelessExtractor;
 import com.google.common.collect.ImmutableMap;
@@ -30,7 +31,8 @@ public class ExtractItems {
 
 	private Map<Class<? extends Extractor>, Long> storeIndex = ImmutableMap
 			.<Class<? extends Extractor>, Long> builder().put(BgCoZaExtractor.class, 3L)
-			.put(TakealotExtractor.class, 1L).put(TimelessExtractor.class, 2L).build();
+			.put(TakealotExtractor.class, 1L).put(TimelessExtractor.class, 2L).put(GamersQuestExtractor.class, 4L)
+			.build();
 
 	@Scheduled(fixedDelay = 3_600_000)
 	public void extract() {

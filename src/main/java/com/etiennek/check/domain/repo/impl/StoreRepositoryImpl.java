@@ -16,6 +16,7 @@ public class StoreRepositoryImpl implements StoreRepository {
 	.add(new Store(1L, "Takealot", "http://www.takealot.com/"))
 			.add(new Store(2L, "Timeless Board Games", "http://www.timelessboardgames.co.za/"))
 			.add(new Store(3L, "Boardgames.co.za", "http://www.boardgames.co.za/"))
+			.add(new Store(4L, "Gamer's Quest", "http://www.gamersquestsa.com/"))
 
 			.build().stream().collect(Collectors.toMap(Store::getId, Function.identity()));
 
