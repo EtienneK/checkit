@@ -1,4 +1,4 @@
-package com.etiennek.check.integration.store.takealot;
+package com.etiennek.check.integration.store.loot;
 
 import static com.etiennek.util.Utils.m;
 
@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -21,24 +22,24 @@ import com.etiennek.check.integration.store.Item;
 import com.etiennek.check.integration.store.StockStatus;
 
 @Component
-public class TakealotExtractor implements Extractor {
+public class LootExtractor implements Extractor {
 
-	private static String BASE_URL = "http://www.takealot.com";
-	private static String PAGE_URL = BASE_URL + "/toys/games-1996?pagesize={pagesize}&page={page}";
+	private static String BASE_URL = "http://www.loot.co.za";
+	private static String PAGE_URL = BASE_URL + "/search/board-games?offset={offset}&sort=&ipp={pagesize}&cat=kbj";
 
 	@Override
 	public Observable<Item> extract() {
 		return Observable.create(subscriber -> {
-			requestPage(1).addCallback(handlePage(subscriber, 1), subscriber::onError);
+			requestPage(1).addCallback(handlePage(subscriber, 0), subscriber::onError);
 		});
 	}
 
 	private SuccessCallback<? super ResponseEntity<String>> handlePage(Subscriber<? super Item> subscriber, int page) {
 		return httpEntity -> {
 
-			List<Item> items = extractItems("li.result-item", httpEntity).stream().collect(Collectors.toList());
+			List<Item> items = extractItems("div.productListing", httpEntity).stream().collect(Collectors.toList());
 
-			if (items.size() == 0) {
+			if (items.isEmpty()) {
 				subscriber.onCompleted();
 				return;
 			}
@@ -51,7 +52,8 @@ public class TakealotExtractor implements Extractor {
 	}
 
 	private ListenableFuture<ResponseEntity<String>> requestPage(int page) {
-		return restCall(PAGE_URL, m().put("pagesize", 100).put("page", page).build());
+		final int pageSize = 25;
+		return restCall(PAGE_URL, m().put("pagesize", pageSize).put("offset", page * pageSize).build());
 	}
 
 	private List<Item> extractItems(String itemSelector, ResponseEntity<String> httpEntity) {
@@ -65,17 +67,21 @@ public class TakealotExtractor implements Extractor {
 	}
 
 	private Item map(Element el) {
-		String name = el.select("p.p-title").text();
+		String name = el.select("td cite a").text();
 
-		BigDecimal price = new BigDecimal(el.select("p.price span.amount").text().replaceAll(",", ""));
+		String priceString = el.select("span.price").get(0).childNodes().stream()
+				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst().get().toString();
 
-		String url = BASE_URL + el.select("p.p-title a").attr("href").toString();
+		BigDecimal price = new BigDecimal(priceString.replaceAll(",", "").replaceAll("R", "").trim());
 
-		StockStatus stockStatus = StockStatus.OUT_OF_STOCK;
-		if (el.select("div.shipping-information span.in-stock").isEmpty() == false) {
+		String url = BASE_URL + el.select("td cite a").attr("href").toString();
+
+		StockStatus stockStatus = StockStatus.IN_STOCK_SUPPLIER;
+		String stockStatusString = el.select("td span.availability").text().trim().toLowerCase();
+		if (stockStatusString.equals("in stock")) {
 			stockStatus = StockStatus.IN_STOCK_STORE;
-		} else if (el.select("div.shipping-information span.wha strong").isEmpty() == false) {
-			stockStatus = StockStatus.IN_STOCK_SUPPLIER;
+		} else if (stockStatusString.equals("out of stock")) {
+			stockStatus = StockStatus.OUT_OF_STOCK;
 		}
 
 		String id = url.substring(url.lastIndexOf("/") + 1);
