@@ -43,10 +43,10 @@ public class TakealotExtractor implements Extractor {
 				return;
 			}
 
+			items.forEach(subscriber::onNext);
+			
 			int nextPage = page + 1;
 			requestPage(nextPage).addCallback(handlePage(subscriber, nextPage), subscriber::onError);
-
-			items.forEach(subscriber::onNext);
 		};
 	}
 
