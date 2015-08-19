@@ -39,7 +39,7 @@ public class GamersQuestExtractor implements Extractor {
 		return httpEntity -> {
 			List<Item> items = extractItems("a.grid-link", httpEntity).stream().collect(Collectors.toList());
 
-			if (items.isEmpty()) {
+			if (items.size() == 0) {
 				subscriber.onCompleted();
 				return;
 			}

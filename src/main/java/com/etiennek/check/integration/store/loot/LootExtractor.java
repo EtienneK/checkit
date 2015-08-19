@@ -39,7 +39,7 @@ public class LootExtractor implements Extractor {
 
 			List<Item> items = extractItems("div.productListing", httpEntity).stream().collect(Collectors.toList());
 
-			if (items.isEmpty()) {
+			if (items.size() == 0) {
 				subscriber.onCompleted();
 				return;
 			}
