@@ -26,9 +26,7 @@ import com.etiennek.check.integration.store.StockStatus;
 public class GamersQuestExtractor implements Extractor {
 
 	private static String BASE_URL = "http://www.gamersquestsa.com";
-	private static String PAGE_URL = BASE_URL + "/games.html?limit={limit}&p={page}";
-
-	private boolean done = false;
+	private static String PAGE_URL = BASE_URL + "/collections/all?page={page}";
 
 	@Override
 	public Observable<Item> extract() {
@@ -39,12 +37,12 @@ public class GamersQuestExtractor implements Extractor {
 
 	private SuccessCallback<? super ResponseEntity<String>> handlePage(Subscriber<? super Item> subscriber, int page) {
 		return httpEntity -> {
-			if (done) {
+			List<Item> items = extractItems("a.grid-link", httpEntity).stream().collect(Collectors.toList());
+
+			if (items.isEmpty()) {
 				subscriber.onCompleted();
 				return;
 			}
-
-			List<Item> items = extractItems("#products-list li.item", httpEntity).stream().collect(Collectors.toList());
 
 			int nextPage = page + 1;
 			requestPage(nextPage).addCallback(handlePage(subscriber, nextPage), subscriber::onError);
@@ -54,16 +52,11 @@ public class GamersQuestExtractor implements Extractor {
 	}
 
 	private ListenableFuture<ResponseEntity<String>> requestPage(int page) {
-		return restCall(PAGE_URL, m().put("limit", 25).put("page", page).build());
+		return restCall(PAGE_URL, m().put("page", page).build());
 	}
 
 	private List<Item> extractItems(String itemSelector, ResponseEntity<String> httpEntity) {
 		Document document = Jsoup.parse(httpEntity.getBody());
-
-		if (document.select("a.next").isEmpty()) {
-			done = true;
-		}
-
 		return document.select(itemSelector).stream().map(el -> {
 			try {
 				return map(el);
@@ -74,15 +67,19 @@ public class GamersQuestExtractor implements Extractor {
 	}
 
 	private Item map(Element el) {
-		String name = WordUtils.capitalizeFully(el.select("h2.product-name").text());
+		String name = WordUtils.capitalizeFully(el.select("p.grid-link__title").text());
 
-		BigDecimal price = new BigDecimal(el.select("span.price").text().replaceAll(",", "").replaceAll("R", ""));
+		BigDecimal price = new BigDecimal(
+				el.select("p.grid-link__meta > strong").text().replaceAll(",", "").replaceAll("R", "").trim());
 
-		String url = el.select("h2.product-name a").attr("href").toString();
+		String url = BASE_URL + el.attr("href").toString();
 
 		StockStatus stockStatus = StockStatus.IN_STOCK_STORE;
+		if (!el.select("span.badge--sold-out").isEmpty()) {
+			stockStatus = StockStatus.OUT_OF_STOCK;
+		}
 
-		String id = el.select("span.regular-price").attr("id").toString().replaceAll("product-price-", "");
+		String id = url.substring(url.lastIndexOf("/") + 1);
 
 		return new Item(id, name, price, stockStatus, url);
 	}

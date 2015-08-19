@@ -17,6 +17,7 @@ import com.etiennek.check.integration.store.Extractor;
 import com.etiennek.check.integration.store.StockStatus;
 import com.etiennek.check.integration.store.bgcoza.BgCoZaExtractor;
 import com.etiennek.check.integration.store.gamersquest.GamersQuestExtractor;
+import com.etiennek.check.integration.store.loot.LootExtractor;
 import com.etiennek.check.integration.store.takealot.TakealotExtractor;
 import com.etiennek.check.integration.store.timeless.TimelessExtractor;
 import com.google.common.collect.ImmutableMap;
@@ -29,10 +30,9 @@ public class ExtractItems {
 	private @Autowired ItemRepository itemRepository;
 	private @Autowired List<Extractor> extractors;
 
-	private Map<Class<? extends Extractor>, Long> storeIndex = ImmutableMap
-			.<Class<? extends Extractor>, Long> builder().put(BgCoZaExtractor.class, 3L)
-			.put(TakealotExtractor.class, 1L).put(TimelessExtractor.class, 2L).put(GamersQuestExtractor.class, 4L)
-			.build();
+	private Map<Class<? extends Extractor>, Long> storeIndex = ImmutableMap.<Class<? extends Extractor>, Long> builder()
+			.put(BgCoZaExtractor.class, 3L).put(TakealotExtractor.class, 1L).put(TimelessExtractor.class, 2L)
+			.put(GamersQuestExtractor.class, 4L).put(LootExtractor.class, 5L).build();
 
 	@Scheduled(fixedDelay = 3_600_000)
 	public void extract() {
@@ -44,31 +44,28 @@ public class ExtractItems {
 			if (storeId == null) {
 				throw new IllegalStateException(e.getClass() + " does not have a store index");
 			}
-			e.extract().subscribe(
-					i -> {
-						if (!i.isValid()) {
-							log.error("Invalid item: " + i.getInvalidDetails(), i.getInvalidException());
-							return;
-						}
-						log.debug(String.format("Got item #[%s] for extractor[%s]: %s", count.get(), e.getClass(), i));
+			e.extract().subscribe(i -> {
+				if (!i.isValid()) {
+					log.error("Invalid item: " + i.getInvalidDetails(), i.getInvalidException());
+					return;
+				}
+				log.debug(String.format("Got item #[%s] for extractor[%s]: %s", count.get(), e.getClass(), i));
 
-						String id = storeId + "-" + i.getId();
-						boolean inStock = i.getStockStatus() == StockStatus.OUT_OF_STOCK ? false : true;
-						itemRepository.index(new Item(id, i.getId(), storeId, i.getName(), i.getUrl(), i.getPrice(),
-								inStock).audit(LocalDateTime.now()));
-						count.getAndIncrement();
-					},
-					ex -> log.error("Unknown error occured", ex),
-					() -> {
-						itemRepository.findByLastModifiedDateLessThanAndStoreIdAndInStockTrue(startingTime, storeId)
-								.forEach(i -> {
-									i.setInStock(false);
-									itemRepository.index(i);
-								});
+				String id = storeId + "-" + i.getId();
+				boolean inStock = i.getStockStatus() == StockStatus.OUT_OF_STOCK ? false : true;
+				itemRepository.index(new Item(id, i.getId(), storeId, i.getName(), i.getUrl(), i.getPrice(), inStock)
+						.audit(LocalDateTime.now()));
+				count.getAndIncrement();
+			} , ex -> log.error("Unknown error occured", ex), () -> {
+				itemRepository.findByLastModifiedDateLessThanAndStoreIdAndInStockTrue(startingTime, storeId)
+						.forEach(i -> {
+					i.setInStock(false);
+					itemRepository.index(i);
+				});
 
-						log.info(String.format("Done with extracting [%s] number of items for extractor [%s]",
-								count.get(), e.getClass()));
-					});
+				log.info(String.format("Done with extracting [%s] number of items for extractor [%s]", count.get(),
+						e.getClass()));
+			});
 		});
 	}
 }
