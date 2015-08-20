@@ -73,7 +73,7 @@ public class RaruExtractor implements Extractor {
 
 		BigDecimal price = new BigDecimal(priceString.replaceAll(",", "").replaceAll("R", "").trim());
 
-		String url = BASE_URL + el.select("td cite a").attr("href").toString();
+		String url = BASE_URL + el.select("figure > a").attr("href");
 
 		StockStatus stockStatus = StockStatus.IN_STOCK_STORE;
 		if (el.select("div.avail").text().trim().toLowerCase().contains("out of stock")) {
@@ -86,7 +86,8 @@ public class RaruExtractor implements Extractor {
 			stockStatus = StockStatus.IN_STOCK_SUPPLIER;
 		}
 
-		String id = BASE_URL + el.select("figure > a").attr("href");
+		String id = url.substring(url.lastIndexOf("/") + 1);
+		id = id.substring(0, id.indexOf("-"));
 
 		return new Item(id, name, price, stockStatus, url);
 	}

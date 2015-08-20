@@ -47,7 +47,7 @@ public class AllExtractorsTests {
 		baseTest(new LootExtractor(), 200, 60);
 	}
 
-	// @Test
+	@Test
 	public void RaruExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new RaruExtractor(), 400, 60);
 	}
