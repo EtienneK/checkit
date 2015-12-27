@@ -72,8 +72,14 @@ public class BgCoZaExtractor implements Extractor {
 	private Item map(Element el) {
 		String name = el.select("span.hikashop_product_name a").text();
 
-		BigDecimal price = new BigDecimal(el.select("span.hikashop_product_price").text().replaceAll(",", ".")
-				.replaceAll("ZAR", "").replaceAll(" ", "").trim());
+		BigDecimal price;
+
+		try {
+			price = new BigDecimal(el.select("span.hikashop_product_price").text().replaceAll(",", ".")
+					.replaceAll("ZAR", "").replaceAll(" ", "").trim());
+		} catch (NumberFormatException e) {
+			price = BigDecimal.ZERO;
+		}
 
 		String url = BASE_URL + el.select("span.hikashop_product_name a").attr("href").toString();
 

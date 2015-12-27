@@ -70,7 +70,7 @@ public class LootExtractor implements Extractor {
 		String name = el.select("td cite a").text();
 
 		String priceString = el.select("span.price").get(0).childNodes().stream()
-				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst().get().toString();
+				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst().map(s -> s.toString()).orElse("0.00");
 
 		BigDecimal price = new BigDecimal(priceString.replaceAll(",", "").replaceAll("R", "").trim());
 

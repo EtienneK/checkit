@@ -68,8 +68,12 @@ public class RaruExtractor implements Extractor {
 	private Item map(Element el) {
 		String name = el.select("span[itemprop=name]").text();
 
-		String priceString = el.select("span[itemprop=price]").get(0).childNodes().stream()
-				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst().get().toString();
+		String priceString = "0.00";
+		if (!el.select("span[itemprop=price]").isEmpty()) {
+			priceString = el.select("span[itemprop=price]").get(0).childNodes().stream()
+					.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst()
+					.map(s -> s.toString()).orElse("0.00");
+		}
 
 		BigDecimal price = new BigDecimal(priceString.replaceAll(",", "").replaceAll("R", "").trim());
 
