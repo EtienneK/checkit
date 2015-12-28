@@ -71,10 +71,13 @@ public class TakealotExtractor implements Extractor {
 		String id = object.get("id").getAsString();
 		String name = object.get("title").getAsString();
 		BigDecimal price = object.get("selling_price").getAsBigDecimal().setScale(2).divide(new BigDecimal("100"));
+		BigDecimal normalPrice = object.get("old_selling_price").getAsBigDecimal().setScale(2)
+				.divide(new BigDecimal("100"));
 
 		StockStatus stockStatus = StockStatus.OUT_OF_STOCK;
 		boolean inStock = object.get("shipping_information").getAsJsonObject().get("in_stock").getAsBoolean();
-		String inStockString = object.get("shipping_information").getAsJsonObject().get("string").getAsString().trim().toLowerCase();
+		String inStockString = object.get("shipping_information").getAsJsonObject().get("string").getAsString().trim()
+				.toLowerCase();
 		int inStockWarehouseCount = object.get("shipping_information").getAsJsonObject().get("stock_warehouses")
 				.getAsJsonArray().size();
 
@@ -88,6 +91,6 @@ public class TakealotExtractor implements Extractor {
 
 		String url = object.get("uri").getAsString();
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, normalPrice, stockStatus, url);
 	}
 }

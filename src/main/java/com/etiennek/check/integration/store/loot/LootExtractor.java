@@ -45,7 +45,7 @@ public class LootExtractor implements Extractor {
 			}
 
 			items.forEach(subscriber::onNext);
-			
+
 			int nextPage = page + 1;
 			requestPage(nextPage).addCallback(handlePage(subscriber, nextPage), subscriber::onError);
 		};
@@ -70,9 +70,16 @@ public class LootExtractor implements Extractor {
 		String name = el.select("td cite a").text();
 
 		String priceString = el.select("span.price").get(0).childNodes().stream()
-				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst().map(s -> s.toString()).orElse("0.00");
+				.filter(n -> (n instanceof TextNode) && !n.toString().trim().equals("")).findFirst()
+				.map(s -> s.toString()).orElse("0.00");
 
 		BigDecimal price = new BigDecimal(priceString.replaceAll(",", "").replaceAll("R", "").trim());
+		BigDecimal normalPrice = price;
+
+		if (!el.select("span.price del").isEmpty()) {
+			normalPrice = new BigDecimal(
+					el.select("span.price del").text().replaceAll(",", "").replaceAll("R", "").trim());
+		}
 
 		String url = BASE_URL + el.select("td cite a").attr("href").toString();
 
@@ -86,6 +93,6 @@ public class LootExtractor implements Extractor {
 
 		String id = url.substring(url.lastIndexOf("/") + 1);
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, normalPrice, stockStatus, url);
 	}
 }

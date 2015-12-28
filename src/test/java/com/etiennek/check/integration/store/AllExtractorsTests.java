@@ -18,36 +18,39 @@ import com.etiennek.check.integration.store.raru.RaruExtractor;
 import com.etiennek.check.integration.store.takealot.TakealotExtractor;
 import com.etiennek.check.integration.store.timeless.TimelessExtractor;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
+
+@Ignore
 public class AllExtractorsTests {
 
 	private Log log = LogFactory.getLog(getClass());
 
-	//@Test
+	@Test
 	public void TakealotExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new TakealotExtractor(), 300, 60);
 	}
 
-	//@Test
+	@Test
 	public void TimelessExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new TimelessExtractor(), 100, 20);
 	}
 
-	//@Test
+	@Test
 	public void BgCoZaExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new BgCoZaExtractor(), 160, 60);
 	}
 
-	//@Test
+	@Test
 	public void GamersQuestExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new GamersQuestExtractor(), 350, 60);
 	}
 
-	//@Test
+	@Test
 	public void LootExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new LootExtractor(), 200, 60);
 	}
 
-	//@Test
+	@Test
 	public void RaruExtractor_Should_be_able_to_extract_Items() {
 		baseTest(new RaruExtractor(), 400, 60);
 	}

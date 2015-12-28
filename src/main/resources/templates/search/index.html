@@ -39,7 +39,7 @@
 
 		<script type="text/html" id="result">
 			<tr>
-				<td><a class="item-name" data-bind="text: itemName + (!inStock ? ' (Out of Stock)' : ''), attr: { href: itemUrl }"></a></td>
+				<td><a class="item-name" data-bind="text: itemName + (!inStock ? ' (Out of Stock)' : '') + (onSale ? ' !!ON SALE!!' : ''), attr: { href: itemUrl }"></a></td>
 				<td><a data-bind="text: storeName, attr: { href: storeUrl }"></a></td>
 				<td class="item-price" data-bind="text: price ? 'R ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 'R 0.00'"></td>
 			</tr>

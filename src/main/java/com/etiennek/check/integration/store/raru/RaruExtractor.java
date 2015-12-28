@@ -93,6 +93,6 @@ public class RaruExtractor implements Extractor {
 		String id = url.substring(url.lastIndexOf("/") + 1);
 		id = id.substring(0, id.indexOf("-"));
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, price, stockStatus, url); // TODO: normalPrice can be retrieved, but would need to view item's page
 	}
 }

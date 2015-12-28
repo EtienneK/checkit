@@ -72,13 +72,14 @@ public class BgCoZaExtractor implements Extractor {
 	private Item map(Element el) {
 		String name = el.select("span.hikashop_product_name a").text();
 
-		BigDecimal price;
-
+		BigDecimal price = BigDecimal.ZERO;
+		BigDecimal normalPrice = BigDecimal.ZERO;
 		try {
 			price = new BigDecimal(el.select("span.hikashop_product_price").text().replaceAll(",", ".")
 					.replaceAll("ZAR", "").replaceAll(" ", "").trim());
+			normalPrice = new BigDecimal(el.select("span.hikashop_product_price_before_discount").text()
+					.replaceAll(",", ".").replaceAll("ZAR", "").replaceAll(" ", "").trim());
 		} catch (NumberFormatException e) {
-			price = BigDecimal.ZERO;
 		}
 
 		String url = BASE_URL + el.select("span.hikashop_product_name a").attr("href").toString();
@@ -91,6 +92,6 @@ public class BgCoZaExtractor implements Extractor {
 		String id = url.substring(url.lastIndexOf("/") + 1);
 		id = id.substring(0, id.indexOf("-"));
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, normalPrice, stockStatus, url);
 	}
 }

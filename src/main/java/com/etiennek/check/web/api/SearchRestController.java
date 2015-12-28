@@ -48,8 +48,9 @@ public class SearchRestController {
 				.stream()
 				.map(i -> {
 					Store store = storeRepository.findOne(i.getStoreId());
-					return new SearchResult(i.getName(), i.getUrl(), store.getName(), store.getUrl(), i.getPrice(), i
-							.isInStock());
+					System.out.println(i);
+					return new SearchResult(i.getName(), i.getUrl(), store.getName(), store.getUrl(), i.getPrice(), i.getNormalPrice(), i
+							.isInStock(), i.getNormalPrice().compareTo(i.getPrice()) > 0);
 				}).collect(Collectors.toList());
 
 		ret.setResult(new PageImpl<SearchResult>(mappedResults, pageable, searchResults.getTotalElements()));

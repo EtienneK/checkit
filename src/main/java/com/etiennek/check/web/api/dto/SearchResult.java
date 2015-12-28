@@ -8,17 +8,21 @@ public class SearchResult {
 	private String storeName;
 	private String storeUrl;
 	private BigDecimal price;
+	private BigDecimal normalPrice;
 	private boolean inStock;
+	private boolean onSale;
 
 	public SearchResult(String itemName, String itemUrl, String storeName, String storeUrl, BigDecimal price,
-			boolean inStock) {
+			BigDecimal normalPrice, boolean inStock, boolean onSale) {
 		super();
 		this.itemName = itemName;
 		this.itemUrl = itemUrl;
 		this.storeName = storeName;
 		this.storeUrl = storeUrl;
 		this.price = price;
+		this.normalPrice = normalPrice;
 		this.inStock = inStock;
+		this.onSale = onSale;
 	}
 
 	public String getItemName() {
@@ -41,8 +45,16 @@ public class SearchResult {
 		return price;
 	}
 
+	public BigDecimal getNormalPrice() {
+		return normalPrice;
+	}
+
 	public boolean isInStock() {
 		return inStock;
+	}
+
+	public boolean isOnSale() {
+		return onSale;
 	}
 
 }

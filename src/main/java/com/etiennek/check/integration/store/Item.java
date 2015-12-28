@@ -7,6 +7,7 @@ public class Item {
 	private String id;
 	private String name;
 	private BigDecimal price;
+	private BigDecimal normalPrice;
 	private StockStatus stockStatus;
 	private String url;
 
@@ -24,12 +25,26 @@ public class Item {
 	private Item() {
 	}
 
-	public Item(String id, String name, BigDecimal price, StockStatus stockStatus, String url) {
+	public Item(String id, String name, BigDecimal price, BigDecimal normalPrice, StockStatus stockStatus, String url) {
 		this.valid = true;
+
+		if (id == null)
+			throw new NullPointerException("id");
+		if (name == null)
+			throw new NullPointerException("name");
+		if (price == null)
+			throw new NullPointerException("price");
+		if (normalPrice == null)
+			throw new NullPointerException("normalPrice");
+		if (stockStatus == null)
+			throw new NullPointerException("stockStatus");
+		if (url == null)
+			throw new NullPointerException("url");
 
 		this.id = id;
 		this.name = name;
 		this.price = price;
+		this.normalPrice = normalPrice;
 		this.stockStatus = stockStatus;
 		this.url = url;
 	}
@@ -66,11 +81,15 @@ public class Item {
 		return valid;
 	}
 
+	public BigDecimal getNormalPrice() {
+		return normalPrice;
+	}
+
 	@Override
 	public String toString() {
-		return "Item [id=" + id + ", name=" + name + ", price=" + price + ", stockStatus=" + stockStatus + ", url="
-				+ url + ", valid=" + valid + ", invalidDetails=" + invalidDetails + ", invalidException="
-				+ invalidException + "]";
+		return "Item [id=" + id + ", name=" + name + ", price=" + price + ", normalPrice=" + normalPrice
+				+ ", stockStatus=" + stockStatus + ", url=" + url + ", valid=" + valid + ", invalidDetails="
+				+ invalidDetails + ", invalidException=" + invalidException + "]";
 	}
 
 }

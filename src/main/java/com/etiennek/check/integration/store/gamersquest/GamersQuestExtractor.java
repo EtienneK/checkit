@@ -81,7 +81,7 @@ public class GamersQuestExtractor implements Extractor {
 
 		String id = url.substring(url.lastIndexOf("/") + 1);
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, price, stockStatus, url);
 	}
 
 }

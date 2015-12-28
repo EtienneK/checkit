@@ -19,6 +19,7 @@ public class Item {
 	private String url;
 
 	private BigDecimal price;
+	private BigDecimal normalPrice;
 
 	private boolean inStock;
 
@@ -30,13 +31,28 @@ public class Item {
 	protected Item() {
 	}
 
-	public Item(String id, String externalId, long storeId, String name, String url, BigDecimal price, boolean inStock) {
+	public Item(String id, String externalId, long storeId, String name, String url, BigDecimal price,
+			BigDecimal normalPrice, boolean inStock) {
+		if (id == null)
+			throw new NullPointerException("id");
+		if (externalId == null)
+			throw new NullPointerException("externalId");
+		if (name == null)
+			throw new NullPointerException("name");
+		if (url == null)
+			throw new NullPointerException("url");
+		if (price == null)
+			throw new NullPointerException("price");
+		if (normalPrice == null)
+			throw new NullPointerException("normalPrice");
+		
 		this.id = id;
 		this.externalId = externalId;
 		this.storeId = storeId;
 		this.name = name;
 		this.url = url;
 		this.price = price;
+		this.normalPrice = normalPrice;
 		this.inStock = inStock;
 	}
 
@@ -72,6 +88,10 @@ public class Item {
 		this.inStock = inStock;
 	}
 
+	public BigDecimal getNormalPrice() {
+		return normalPrice;
+	}
+
 	public Item audit(LocalDateTime lastModifiedDate) {
 		// TODO: REMOVE once auditing works on elasticsearch
 		this.lastModifiedDate = lastModifiedDate;
@@ -81,8 +101,8 @@ public class Item {
 	@Override
 	public String toString() {
 		return "Item [id=" + id + ", externalId=" + externalId + ", storeId=" + storeId + ", name=" + name + ", url="
-				+ url + ", price=" + price + ", inStock=" + inStock + ", createdDate=" + createdDate
-				+ ", lastModifiedDate=" + lastModifiedDate + "]";
+				+ url + ", price=" + price + ", normalPrice=" + normalPrice + ", inStock=" + inStock + ", createdDate="
+				+ createdDate + ", lastModifiedDate=" + lastModifiedDate + "]";
 	}
 
 }

@@ -77,15 +77,19 @@ public class TimelessExtractor implements Extractor {
 		String name = el.select("span.thumbnail strong div a").text();
 
 		String priceText;
+		String normalPriceText;
 		Elements priceElements = el.select("span.thumbnail span.price span");
 		if (!priceElements.isEmpty()) {
 			// On Sale
 			priceText = priceElements.text();
+			normalPriceText = el.select("span.thumbnail span.price strike").text();
 		} else {
 			priceElements = el.select("span.thumbnail span.price");
 			priceText = priceElements.text();
+			normalPriceText = priceText;
 		}
 		BigDecimal price = new BigDecimal(priceText.replaceAll(",", "").replaceAll("R", "").trim());
+		BigDecimal normalPrice = new BigDecimal(normalPriceText.replaceAll(",", "").replaceAll("R", "").trim());
 
 		String url = BASE_URL + el.select("span.thumbnail strong div a").attr("href").toString();
 
@@ -93,6 +97,6 @@ public class TimelessExtractor implements Extractor {
 
 		String id = url.substring(url.lastIndexOf("/") + 1);
 
-		return new Item(id, name, price, stockStatus, url);
+		return new Item(id, name, price, normalPrice, stockStatus, url);
 	}
 }
