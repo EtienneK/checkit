@@ -1,6 +1,7 @@
 package com.etiennek.check.web.api.dto;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class SearchResult {
 	private String itemName;
@@ -9,6 +10,9 @@ public class SearchResult {
 	private String storeUrl;
 	private BigDecimal price;
 	private BigDecimal normalPrice;
+	private String priceString;
+	private String normalPriceString;
+	private BigDecimal savingsPercent;
 	private boolean inStock;
 	private boolean onSale;
 
@@ -23,6 +27,11 @@ public class SearchResult {
 		this.normalPrice = normalPrice;
 		this.inStock = inStock;
 		this.onSale = onSale;
+
+		DecimalFormat decimalFormat = new DecimalFormat("R ###,###,##0.00");
+		priceString = decimalFormat.format(price);
+		normalPriceString = decimalFormat.format(normalPrice);
+		savingsPercent = (normalPrice.subtract(price)).divide(normalPrice);
 	}
 
 	public String getItemName() {
@@ -55,6 +64,18 @@ public class SearchResult {
 
 	public boolean isOnSale() {
 		return onSale;
+	}
+
+	public String getPriceString() {
+		return priceString;
+	}
+
+	public String getNormalPriceString() {
+		return normalPriceString;
+	}
+
+	public BigDecimal getSavingsPercent() {
+		return savingsPercent;
 	}
 
 }

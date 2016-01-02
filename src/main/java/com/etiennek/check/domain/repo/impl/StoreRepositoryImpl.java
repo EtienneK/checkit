@@ -4,10 +4,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Repository;
+
 import com.etiennek.check.domain.model.Store;
 import com.etiennek.check.domain.repo.StoreRepository;
 import com.google.common.collect.ImmutableList;
 
+@Repository
 public class StoreRepositoryImpl implements StoreRepository {
 
 	// @formatter:off

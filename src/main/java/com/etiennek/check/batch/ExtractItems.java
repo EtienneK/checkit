@@ -54,14 +54,14 @@ public class ExtractItems {
 
 				String id = storeId + "-" + i.getId();
 				boolean inStock = i.getStockStatus() == StockStatus.OUT_OF_STOCK ? false : true;
-				itemRepository.index(new Item(id, i.getId(), storeId, i.getName(), i.getUrl(), i.getPrice(),
+				itemRepository.save(new Item(id, i.getId(), storeId, i.getName(), i.getUrl(), i.getPrice(),
 						i.getNormalPrice(), inStock).audit(LocalDateTime.now()));
 				count.getAndIncrement();
 			} , ex -> log.error("Unknown error occured", ex), () -> {
 				itemRepository.findByLastModifiedDateLessThanAndStoreIdAndInStockTrue(startingTime, storeId)
 						.forEach(i -> {
 					i.setInStock(false);
-					itemRepository.index(i);
+					itemRepository.save(i);
 				});
 
 				log.info(String.format("Done with extracting [%s] number of items for extractor [%s]", count.get(),

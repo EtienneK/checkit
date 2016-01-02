@@ -2,13 +2,12 @@ package com.etiennek.check.domain.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Id;
+
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.elasticsearch.annotations.Document;
 
-@Document(indexName = "store")
 public class Store {
   @Id
   private Long id;

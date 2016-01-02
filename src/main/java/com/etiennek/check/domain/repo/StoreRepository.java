@@ -1,9 +1,7 @@
 package com.etiennek.check.domain.repo;
 
-import org.springframework.data.repository.Repository;
-
 import com.etiennek.check.domain.model.Store;
 
-public interface StoreRepository extends Repository<Store, Long> {
+public interface StoreRepository {
 	Store findOne(long id);
 }

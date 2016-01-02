@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.etiennek.check.integration.store.bgcoza.BgCoZaExtractor;
@@ -17,8 +18,6 @@ import com.etiennek.check.integration.store.loot.LootExtractor;
 import com.etiennek.check.integration.store.raru.RaruExtractor;
 import com.etiennek.check.integration.store.takealot.TakealotExtractor;
 import com.etiennek.check.integration.store.timeless.TimelessExtractor;
-
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 @Ignore
 public class AllExtractorsTests {
