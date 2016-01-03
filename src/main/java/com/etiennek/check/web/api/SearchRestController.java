@@ -40,7 +40,7 @@ public class SearchRestController {
 							.isInStock(), i.getNormalPrice().compareTo(i.getPrice()) > 0);
 				}).collect(Collectors.toList());
 
-		ret.setResult(new PageImpl<SearchResult>(mappedResults, pageable, searchResults.getTotalElements()));
+		ret.setResult(new PageImpl<>(mappedResults, pageable, searchResults.getTotalElements()));
 		return ret;
 	}
 

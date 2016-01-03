@@ -1,6 +1,7 @@
 package com.etiennek.check.web.api.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class SearchResult {
@@ -31,7 +32,11 @@ public class SearchResult {
 		DecimalFormat decimalFormat = new DecimalFormat("R ###,###,##0.00");
 		priceString = decimalFormat.format(price);
 		normalPriceString = decimalFormat.format(normalPrice);
-		savingsPercent = (normalPrice.subtract(price)).divide(normalPrice);
+		if (normalPrice.compareTo(BigDecimal.ZERO) != 0) {
+			savingsPercent = (normalPrice.subtract(price)).divide(normalPrice, 2, RoundingMode.HALF_UP);
+		} else {
+			savingsPercent = BigDecimal.ZERO;
+		}
 	}
 
 	public String getItemName() {

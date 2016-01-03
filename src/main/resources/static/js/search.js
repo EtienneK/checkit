@@ -1,65 +1,32 @@
-$(function() {
-	var viewModel = {};
+$(document).on("pagecreate", "#search-page", function() {
+    $("#bg-search-list").on("filterablebeforefilter", function (e, data) {
+        var $ul = $(this),
+            $input = $(data.input),
+            value = $input.val(),
+            html = "";
+        $ul.html("");
 
-	viewModel.results = ko.observableArray([]);
-	viewModel.totalPages = ko.observable(0);
-	viewModel.currentPage = ko.observable(-1);
-	viewModel.nextPage = ko.observable(0);
+        if (value && value.length > 0) {
+            $ul.html("<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'>Loading...</span></div></li>");
+            $ul.listview("refresh");
 
-	viewModel.isTypingInQueryInput = ko.observable(false);
-
-	viewModel.query = ko.observable();
-
-	viewModel.query.subscribe(function(value) {
-		viewModel.updateData();
-		viewModel.isTypingInQueryInput(true);
-	}, viewModel);
-
-	viewModel.delayedQuery = ko.computed(viewModel.query).extend({
-		rateLimit : {
-			method : "notifyWhenChangesStop",
-			timeout : 550
-		}
-	});
-
-	viewModel.delayedQuery.subscribe(function(value) {
-		var query = value.toLowerCase().trim();
-
-		if (query === '') {
-			viewModel.updateData();
-		} else {
-			viewModel.fetchNextPage(query);
-		}
-
-	}, viewModel);
-
-	viewModel.fetchNextPage = function(query) {
-		query = query || viewModel.query();
-		if (typeof query === 'object')
-			query = viewModel.query();
-		query = query.toLowerCase().trim();
-
-		$.get('/api/v1/search', {
-			query : query,
-			page : viewModel.nextPage()
-		}).done(function(data) {
-			viewModel.updateData(data);
-		});
-	}
-
-	viewModel.updateData = function(data) {
-		data = data || {};
-		if (data.content) {
-			ko.utils.arrayPushAll(viewModel.results, data.content);
-		} else {
-			viewModel.results([]);
-		}
-		viewModel.totalPages(data.totalPages || 0);
-		viewModel.currentPage(data.number === undefined ? -1 : data.number);
-		viewModel.nextPage(viewModel.currentPage() + 1);
-		viewModel.isTypingInQueryInput(false);
-	};
-
-	ko.applyBindings(viewModel);
-
+			setTimeout(function() {
+				if ($input.val() !== value) return;
+				
+	            $.ajax({
+	                url: "api/v1/search?query=" + $input.val(),
+	                dataType: "json"
+	            })
+	            .then(function (response) {
+	                $.each(response.content, function(i, val) {
+	                	html += $("<li/>").html(val.itemName).prop('outerHTML');
+					});
+	                $ul.html(html);
+	                $ul.listview("refresh");
+	                $ul.trigger("updatelayout");
+	            });
+			}, 500);
+			
+        }
+    });
 });

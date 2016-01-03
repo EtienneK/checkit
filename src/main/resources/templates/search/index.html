@@ -1,51 +1,37 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
 	layout:decorator="layout">
 
 <head>
 <title>Board Game Price Search in South Africa</title>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script th:src="@{/js/vendor/knockout.js}"></script>
 <script th:src="@{/js/search.js}"></script>
-
 </head>
 
 <body>
-	<div layout:fragment="content" class="container">
 
-		<input type="search" class="form-control input-lg" id="searchInput" placeholder="Search..." autocomplete="off"
-			data-bind="value: query, valueUpdate: [&#39;input&#39;, &#39;afterkeydown&#39;]" />
+	<th:block layout:fragment="content">
 
-		<p data-bind="visible: isTypingInQueryInput() === true" style="margin-top: 10px;">Searching...</p>
-		<p data-bind="visible: !isTypingInQueryInput() &amp;&amp; results().length &lt;= 0" style="margin-top: 10px;">No
-			results found.</p>
+		<div id="search-page" data-role="page">
 
-		<div data-bind="visible: !isTypingInQueryInput() &amp;&amp; results().length &gt; 0">
-			<table class="table table-striped table-hover table-bordered item-list">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Shop</th>
-						<th>Price</th>
-					</tr>
-				</thead>
-				<tbody data-bind="template: {name:'result', foreach:results}">
-				</tbody>
-			</table>
+			<div data-role="header" style="overflow: hidden;">
+				<h1>Search</h1>
+			</div>
 
-			<button class="btn btn-primary btn-lg btn-block" style="margin-bottom: 10px;"
-				data-bind="click: fetchNextPage,visible: nextPage() &lt; totalPages()">Load More Results</button>
+			<div role="main" class="ui-content">
+				<form class="ui-filterable">
+					<input id="bg-search-input" type="search"
+						placeholder="Search Board Games..." />
+				</form>
+				<ul id="bg-search-list" data-role="listview" data-inset="true"
+					data-filter="true" data-input="#bg-search-input">
+				</ul>
+			</div>
+
+			<div data-role="footer"></div>
 		</div>
 
-		<script type="text/html" id="result">
-			<tr>
-				<td><a class="item-name" data-bind="text: itemName + (!inStock ? ' (Out of Stock)' : '') + (onSale ? ' !!ON SALE!!' : ''), attr: { href: itemUrl }"></a></td>
-				<td><a data-bind="text: storeName, attr: { href: storeUrl }"></a></td>
-				<td class="item-price" data-bind="text: price ? 'R ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 'R 0.00'"></td>
-			</tr>
-		</script>
+	</th:block>
 
-	</div>
 </body>
 
 </html>
