@@ -19,7 +19,12 @@ $(document).on("pagecreate", "#search-page", function() {
 	            })
 	            .then(function (response) {
 	                $.each(response.content, function(i, val) {
-	                	html += $("<li/>").html(val.itemName).prop('outerHTML');
+	                	html += 
+							$("<li/>").append($("<a/>").attr("href", val.itemUrl)
+								.append($("<h1/>").html(val.itemName))
+								.append($("<h2/>").html(val.priceString + " <small>from " + val.storeName +"</small>"))
+							)
+							.prop('outerHTML');
 					});
 	                $ul.html(html);
 	                $ul.listview("refresh");
